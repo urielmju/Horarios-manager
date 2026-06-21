@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ScheduleSystem.Api/ScheduleSystem.Api.csproj" />
+  <Project Path="ScheduleSystem.Tests/ScheduleSystem.Tests.csproj" />
+</Solution>
