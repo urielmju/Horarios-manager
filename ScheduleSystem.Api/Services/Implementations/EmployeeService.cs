@@ -85,7 +85,7 @@ public class EmployeeService : IEmployeeService
             ?? throw new KeyNotFoundException("Employee not found.");
         if (e.OwnerId != ownerId)
             throw new UnauthorizedAccessException("Access denied.");
-        await _repo.DeleteAsync(e);
+        await _repo.DeleteWithRelatedAsync(e);
     }
 
     private static EmployeeDto Map(Employee e) => new()

@@ -8,4 +8,5 @@ public class ShiftDto
     public TimeSpan EndTime { get; set; }
     public string Color { get; set; } = string.Empty;
     public int Hours { get; set; }
+    public int OwnerId { get; set; }
 }

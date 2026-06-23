@@ -4,6 +4,7 @@ namespace ScheduleSystem.Api.Repositories.Interfaces;
 
 public interface ICaptainRepository
 {
+    Task<List<Captain>> GetAllByOwnerAsync(int ownerId);
     Task<Captain?> GetByDateAndPlanAsync(int ownerId, DateOnly date, int planId);
     Task<Captain> CreateAsync(Captain captain);
     Task DeleteAsync(Captain captain);

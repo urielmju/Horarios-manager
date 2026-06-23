@@ -4,6 +4,7 @@ namespace ScheduleSystem.Api.Services.Interfaces;
 
 public interface IScheduleService
 {
+    Task<List<ScheduleDto>> GetAllAsync(int ownerId);
     Task<List<ScheduleDto>> GetByDateAsync(int ownerId, DateOnly date);
     Task<List<ScheduleDto>> GetByRangeAsync(int ownerId, DateOnly start, DateOnly end);
     Task<List<ScheduleDto>> GetByEmployeeRangeAsync(int ownerId, int employeeId, DateOnly start, DateOnly end);

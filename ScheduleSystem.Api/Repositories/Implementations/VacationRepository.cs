@@ -44,6 +44,8 @@ public class VacationRepository : IVacationRepository
         await _db.SaveChangesAsync();
     }
 
+    public Task<int> CountAllAsync() => _db.Vacations.CountAsync();
+
     public Task<int> CountActiveByOwnerAsync(int ownerId, DateOnly today) =>
         _db.Vacations.CountAsync(v => v.OwnerId == ownerId && v.StartDate <= today && v.EndDate >= today);
 }

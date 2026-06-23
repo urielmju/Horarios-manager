@@ -54,6 +54,14 @@ public class AppDbContext : DbContext
              .OnDelete(DeleteBehavior.Restrict);
         });
 
+        modelBuilder.Entity<Shift>(e =>
+        {
+            e.HasOne(s => s.Owner)
+             .WithMany()
+             .HasForeignKey(s => s.OwnerId)
+             .OnDelete(DeleteBehavior.Restrict);
+        });
+
         modelBuilder.Entity<Employee>(e =>
         {
             e.HasOne(emp => emp.Owner)
@@ -175,12 +183,5 @@ public class AppDbContext : DbContext
              .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // Seed Shifts
-        modelBuilder.Entity<Shift>().HasData(
-            new Shift { Id = 1, Name = "8am - 5pm",  StartTime = new TimeSpan(8, 0, 0),  EndTime = new TimeSpan(17, 0, 0), Color = "#F6AD55", Hours = 9 },
-            new Shift { Id = 2, Name = "9am - 6pm",  StartTime = new TimeSpan(9, 0, 0),  EndTime = new TimeSpan(18, 0, 0), Color = "#68D391", Hours = 9 },
-            new Shift { Id = 3, Name = "12pm - 9pm", StartTime = new TimeSpan(12, 0, 0), EndTime = new TimeSpan(21, 0, 0), Color = "#76E4F7", Hours = 9 },
-            new Shift { Id = 4, Name = "Outlet",     StartTime = new TimeSpan(8, 0, 0),  EndTime = new TimeSpan(17, 0, 0), Color = "#B794F4", Hours = 9 }
-        );
     }
 }

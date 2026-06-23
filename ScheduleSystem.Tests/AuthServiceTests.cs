@@ -5,6 +5,7 @@ using ScheduleSystem.Api.Models.DTOs.Auth;
 using ScheduleSystem.Api.Models.Entities;
 using ScheduleSystem.Api.Repositories.Interfaces;
 using ScheduleSystem.Api.Services.Implementations;
+using ScheduleSystem.Api.Services.Interfaces;
 
 namespace ScheduleSystem.Tests;
 
@@ -13,6 +14,7 @@ public class AuthServiceTests
     private readonly Mock<IUserRepository>       _users       = new();
     private readonly Mock<IDepartmentRepository> _departments = new();
     private readonly Mock<IEmployeeRepository>   _employees   = new();
+    private readonly Mock<IShiftService>         _shifts      = new();
     private readonly JwtTokenGenerator           _jwt;
 
     public AuthServiceTests()
@@ -29,7 +31,7 @@ public class AuthServiceTests
     }
 
     private AuthService CreateService() =>
-        new(_users.Object, _departments.Object, _employees.Object, _jwt);
+        new(_users.Object, _departments.Object, _employees.Object, _shifts.Object, _jwt);
 
     [Fact]
     public async Task Login_ValidCredentials_ReturnsToken()

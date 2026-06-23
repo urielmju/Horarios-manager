@@ -11,6 +11,9 @@ public class ScheduleService : IScheduleService
 
     public ScheduleService(IScheduleRepository repo) => _repo = repo;
 
+    public async Task<List<ScheduleDto>> GetAllAsync(int ownerId) =>
+        (await _repo.GetAllByOwnerAsync(ownerId)).Select(Map).ToList();
+
     public async Task<List<ScheduleDto>> GetByDateAsync(int ownerId, DateOnly date) =>
         (await _repo.GetByDateAsync(ownerId, date)).Select(Map).ToList();
 

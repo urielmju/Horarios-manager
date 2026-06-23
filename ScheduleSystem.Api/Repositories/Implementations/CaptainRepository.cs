@@ -11,6 +11,12 @@ public class CaptainRepository : ICaptainRepository
 
     public CaptainRepository(AppDbContext db) => _db = db;
 
+    public Task<List<Captain>> GetAllByOwnerAsync(int ownerId) =>
+        _db.Captains
+           .Where(c => c.OwnerId == ownerId)
+           .Include(c => c.Employee)
+           .ToListAsync();
+
     public Task<Captain?> GetByDateAndPlanAsync(int ownerId, DateOnly date, int planId) =>
         _db.Captains
            .Include(c => c.Employee)

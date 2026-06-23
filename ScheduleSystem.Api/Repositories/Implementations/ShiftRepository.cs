@@ -11,7 +11,8 @@ public class ShiftRepository : IShiftRepository
 
     public ShiftRepository(AppDbContext db) => _db = db;
 
-    public Task<List<Shift>> GetAllAsync() => _db.Shifts.ToListAsync();
+    public Task<List<Shift>> GetAllByOwnerAsync(int ownerId) =>
+        _db.Shifts.Where(s => s.OwnerId == ownerId).ToListAsync();
 
     public Task<Shift?> GetByIdAsync(int id) =>
         _db.Shifts.FirstOrDefaultAsync(s => s.Id == id);
@@ -21,6 +22,12 @@ public class ShiftRepository : IShiftRepository
         _db.Shifts.Add(shift);
         await _db.SaveChangesAsync();
         return shift;
+    }
+
+    public async Task CreateManyAsync(IEnumerable<Shift> shifts)
+    {
+        _db.Shifts.AddRange(shifts);
+        await _db.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Shift shift)

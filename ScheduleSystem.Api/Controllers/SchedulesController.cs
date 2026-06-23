@@ -34,7 +34,7 @@ public class SchedulesController : ControllerBase
         if (start.HasValue && end.HasValue)
             return Ok(await _service.GetByRangeAsync(OwnerId, start.Value, end.Value));
 
-        return BadRequest(new { message = "Provide date, or start+end, or start+end+employeeId." });
+        return Ok(await _service.GetAllAsync(OwnerId));
     }
 
     [HttpGet("plan/{planId}")]

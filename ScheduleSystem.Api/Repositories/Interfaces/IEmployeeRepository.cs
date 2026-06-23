@@ -9,5 +9,6 @@ public interface IEmployeeRepository
     Task<Employee> CreateAsync(Employee employee);
     Task UpdateAsync(Employee employee);
     Task DeleteAsync(Employee employee);
+    Task DeleteWithRelatedAsync(Employee employee);
     Task<int> CountActiveByOwnerAsync(int ownerId);
 }

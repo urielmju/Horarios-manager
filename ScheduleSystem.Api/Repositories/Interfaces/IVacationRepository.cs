@@ -11,5 +11,6 @@ public interface IVacationRepository
     Task<Vacation> CreateAsync(Vacation vacation);
     Task UpdateAsync(Vacation vacation);
     Task DeleteAsync(Vacation vacation);
+    Task<int> CountAllAsync();
     Task<int> CountActiveByOwnerAsync(int ownerId, DateOnly today);
 }

@@ -45,6 +45,28 @@ public class EmployeeRepository : IEmployeeRepository
         await _db.SaveChangesAsync();
     }
 
+    public async Task DeleteWithRelatedAsync(Employee employee)
+    {
+        await using var tx = await _db.Database.BeginTransactionAsync();
+        try
+        {
+            var schedules = await _db.Schedules.Where(s => s.EmployeeId == employee.Id).ToListAsync();
+            _db.Schedules.RemoveRange(schedules);
+
+            var captains = await _db.Captains.Where(c => c.EmployeeId == employee.Id).ToListAsync();
+            _db.Captains.RemoveRange(captains);
+
+            _db.Employees.Remove(employee);
+            await _db.SaveChangesAsync();
+            await tx.CommitAsync();
+        }
+        catch
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+    }
+
     public Task<int> CountActiveByOwnerAsync(int ownerId) =>
         _db.Employees.CountAsync(e => e.OwnerId == ownerId && e.Active);
 }

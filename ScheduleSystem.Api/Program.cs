@@ -44,9 +44,19 @@ builder.Services.AddAuthorization();
 // CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("FrontendPolicy", policy =>
+    options.AddPolicy("ProductionPolicy", policy =>
     {
         policy.WithOrigins("https://urielmju.github.io")
+              .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE")
+              .WithHeaders("Authorization", "Content-Type");
+    });
+
+    options.AddPolicy("DevelopmentPolicy", policy =>
+    {
+        policy.WithOrigins(
+                  "https://urielmju.github.io",
+                  "http://localhost:5500",
+                  "http://127.0.0.1:5500")
               .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE")
               .WithHeaders("Authorization", "Content-Type");
     });
@@ -106,6 +116,7 @@ builder.Services.AddScoped<ICaptainService,      CaptainService>();
 builder.Services.AddScoped<IHistoryService,      HistoryService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IReportService,       ReportService>();
+builder.Services.AddScoped<IAuditService,        AuditService>();
 
 builder.Services.AddControllers();
 
@@ -120,7 +131,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("FrontendPolicy");
+app.UseCors(app.Environment.IsDevelopment() ? "DevelopmentPolicy" : "ProductionPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

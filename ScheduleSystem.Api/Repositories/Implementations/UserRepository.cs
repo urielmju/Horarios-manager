@@ -11,6 +11,9 @@ public class UserRepository : IUserRepository
 
     public UserRepository(AppDbContext db) => _db = db;
 
+    public Task<List<User>> GetAllAsync() =>
+        _db.Users.OrderBy(u => u.CreatedAt).ToListAsync();
+
     public Task<User?> GetByIdAsync(int id) =>
         _db.Users.FirstOrDefaultAsync(u => u.Id == id);
 

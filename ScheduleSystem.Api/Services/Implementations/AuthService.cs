@@ -11,17 +11,20 @@ public class AuthService : IAuthService
     private readonly IUserRepository _users;
     private readonly IDepartmentRepository _departments;
     private readonly IEmployeeRepository _employees;
+    private readonly IShiftService _shifts;
     private readonly JwtTokenGenerator _jwt;
 
     public AuthService(
         IUserRepository users,
         IDepartmentRepository departments,
         IEmployeeRepository employees,
+        IShiftService shifts,
         JwtTokenGenerator jwt)
     {
         _users       = users;
         _departments = departments;
         _employees   = employees;
+        _shifts      = shifts;
         _jwt         = jwt;
     }
 
@@ -54,6 +57,7 @@ public class AuthService : IAuthService
         });
 
         await CreateDefaultDepartmentsAsync(user.Id);
+        await _shifts.CreateDefaultShiftsAsync(user.Id);
 
         await _employees.CreateAsync(new Employee
         {
@@ -80,6 +84,7 @@ public class AuthService : IAuthService
         });
 
         await CreateDefaultDepartmentsAsync(user.Id);
+        await _shifts.CreateDefaultShiftsAsync(user.Id);
 
         return BuildResponse(user);
     }

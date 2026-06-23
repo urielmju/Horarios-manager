@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ScheduleSystem.Api.Models.Entities;
 
@@ -18,4 +19,9 @@ public class Shift
     public string Color { get; set; } = string.Empty;
 
     public int Hours { get; set; }
+
+    public int OwnerId { get; set; }
+
+    [ForeignKey(nameof(OwnerId))]
+    public User Owner { get; set; } = null!;
 }

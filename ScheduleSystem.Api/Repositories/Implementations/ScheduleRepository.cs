@@ -17,6 +17,9 @@ public class ScheduleRepository : IScheduleRepository
            .Include(s => s.Employee)
            .Include(s => s.Shift);
 
+    public Task<List<Schedule>> GetAllByOwnerAsync(int ownerId) =>
+        OwnerQuery(ownerId).ToListAsync();
+
     public Task<List<Schedule>> GetByDateAsync(int ownerId, DateOnly date) =>
         OwnerQuery(ownerId).Where(s => s.Date == date).ToListAsync();
 
@@ -56,6 +59,8 @@ public class ScheduleRepository : IScheduleRepository
         _db.Schedules.RemoveRange(items);
         await _db.SaveChangesAsync();
     }
+
+    public Task<int> CountAllAsync() => _db.Schedules.CountAsync();
 
     public Task<int> CountScheduledThisWeekAsync(int ownerId, DateOnly weekStart, DateOnly weekEnd) =>
         _db.Schedules.CountAsync(s => s.OwnerId == ownerId && s.Date >= weekStart && s.Date <= weekEnd && s.Type == "work");

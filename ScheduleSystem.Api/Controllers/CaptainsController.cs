@@ -18,11 +18,16 @@ public class CaptainsController : ControllerBase
     private int OwnerId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet]
-    public async Task<IActionResult> GetByDateAndPlan([FromQuery] DateOnly date, [FromQuery] int planId)
+    public async Task<IActionResult> GetByDateAndPlan([FromQuery] DateOnly? date, [FromQuery] int? planId)
     {
-        var result = await _service.GetByDateAndPlanAsync(OwnerId, date, planId);
-        if (result is null) return NotFound(new { message = "No captain assigned." });
-        return Ok(result);
+        if (date.HasValue && planId.HasValue)
+        {
+            var result = await _service.GetByDateAndPlanAsync(OwnerId, date.Value, planId.Value);
+            if (result is null) return NotFound(new { message = "No captain assigned." });
+            return Ok(result);
+        }
+
+        return Ok(await _service.GetAllAsync(OwnerId));
     }
 
     [HttpPost("assign")]

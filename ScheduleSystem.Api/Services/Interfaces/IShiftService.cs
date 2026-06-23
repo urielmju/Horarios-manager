@@ -4,9 +4,10 @@ namespace ScheduleSystem.Api.Services.Interfaces;
 
 public interface IShiftService
 {
-    Task<List<ShiftDto>> GetAllAsync();
-    Task<ShiftDto> GetByIdAsync(int id);
-    Task<ShiftDto> CreateAsync(CreateShiftDto dto);
-    Task<ShiftDto> UpdateAsync(int id, CreateShiftDto dto);
-    Task DeleteAsync(int id);
+    Task<List<ShiftDto>> GetAllAsync(int ownerId);
+    Task<ShiftDto> GetByIdAsync(int id, int ownerId);
+    Task<ShiftDto> CreateAsync(CreateShiftDto dto, int ownerId);
+    Task<ShiftDto> UpdateAsync(int id, CreateShiftDto dto, int ownerId);
+    Task DeleteAsync(int id, int ownerId);
+    Task CreateDefaultShiftsAsync(int ownerId);
 }

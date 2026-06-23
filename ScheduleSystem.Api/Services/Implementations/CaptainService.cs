@@ -11,6 +11,9 @@ public class CaptainService : ICaptainService
 
     public CaptainService(ICaptainRepository repo) => _repo = repo;
 
+    public async Task<List<CaptainDto>> GetAllAsync(int ownerId) =>
+        (await _repo.GetAllByOwnerAsync(ownerId)).Select(Map).ToList();
+
     public async Task<CaptainDto?> GetByDateAndPlanAsync(int ownerId, DateOnly date, int planId)
     {
         var c = await _repo.GetByDateAndPlanAsync(ownerId, date, planId);

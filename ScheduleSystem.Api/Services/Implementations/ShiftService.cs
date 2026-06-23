@@ -11,19 +11,17 @@ public class ShiftService : IShiftService
 
     public ShiftService(IShiftRepository repo) => _repo = repo;
 
-    public async Task<List<ShiftDto>> GetAllAsync()
-    {
-        var list = await _repo.GetAllAsync();
-        return list.Select(Map).ToList();
-    }
+    public async Task<List<ShiftDto>> GetAllAsync(int ownerId) =>
+        (await _repo.GetAllByOwnerAsync(ownerId)).Select(Map).ToList();
 
-    public async Task<ShiftDto> GetByIdAsync(int id)
+    public async Task<ShiftDto> GetByIdAsync(int id, int ownerId)
     {
         var s = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Shift not found.");
+        if (s.OwnerId != ownerId) throw new UnauthorizedAccessException("Access denied.");
         return Map(s);
     }
 
-    public async Task<ShiftDto> CreateAsync(CreateShiftDto dto)
+    public async Task<ShiftDto> CreateAsync(CreateShiftDto dto, int ownerId)
     {
         var shift = await _repo.CreateAsync(new Shift
         {
@@ -31,14 +29,16 @@ public class ShiftService : IShiftService
             StartTime = dto.StartTime,
             EndTime   = dto.EndTime,
             Color     = dto.Color,
-            Hours     = dto.Hours
+            Hours     = dto.Hours,
+            OwnerId   = ownerId
         });
         return Map(shift);
     }
 
-    public async Task<ShiftDto> UpdateAsync(int id, CreateShiftDto dto)
+    public async Task<ShiftDto> UpdateAsync(int id, CreateShiftDto dto, int ownerId)
     {
         var s = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Shift not found.");
+        if (s.OwnerId != ownerId) throw new UnauthorizedAccessException("Access denied.");
         s.Name      = dto.Name;
         s.StartTime = dto.StartTime;
         s.EndTime   = dto.EndTime;
@@ -48,10 +48,22 @@ public class ShiftService : IShiftService
         return Map(s);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int ownerId)
     {
         var s = await _repo.GetByIdAsync(id) ?? throw new KeyNotFoundException("Shift not found.");
+        if (s.OwnerId != ownerId) throw new UnauthorizedAccessException("Access denied.");
         await _repo.DeleteAsync(s);
+    }
+
+    public Task CreateDefaultShiftsAsync(int ownerId)
+    {
+        var defaults = new[]
+        {
+            new Shift { Name = "Morning",   StartTime = new TimeSpan(8,  0, 0), EndTime = new TimeSpan(16, 0, 0), Color = "#F6AD55", Hours = 8, OwnerId = ownerId },
+            new Shift { Name = "Afternoon", StartTime = new TimeSpan(12, 0, 0), EndTime = new TimeSpan(20, 0, 0), Color = "#68D391", Hours = 8, OwnerId = ownerId },
+            new Shift { Name = "Night",     StartTime = new TimeSpan(20, 0, 0), EndTime = new TimeSpan(4,  0, 0), Color = "#76E4F7", Hours = 8, OwnerId = ownerId },
+        };
+        return _repo.CreateManyAsync(defaults);
     }
 
     private static ShiftDto Map(Shift s) => new()
@@ -61,6 +73,7 @@ public class ShiftService : IShiftService
         StartTime = s.StartTime,
         EndTime   = s.EndTime,
         Color     = s.Color,
-        Hours     = s.Hours
+        Hours     = s.Hours,
+        OwnerId   = s.OwnerId
     };
 }
